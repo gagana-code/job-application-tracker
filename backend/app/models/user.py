@@ -1,0 +1,37 @@
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app.database import Base
+
+
+class User(Base):
+    
+    __tablename__ = "users"
+    
+    # Primary key - similar to @Id @GeneratedValue in JPA
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # User fields
+    email = Column(String, unique=True, index=True, nullable=False)
+    username = Column(String, unique=True, index=True, nullable=False)
+    full_name = Column(String, nullable=True)
+    hashed_password = Column(String, nullable=False)
+    
+    # Status
+    is_active = Column(Boolean, default=True)
+    is_superuser = Column(Boolean, default=False)
+    
+    # Timestamps - similar to @CreatedDate and @LastModifiedDate in Spring
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships - similar to @OneToMany in JPA
+    # PYTHON NOTES:
+    # relationship() creates ORM relationship
+    # back_populates connects to JobApplication.user
+    # cascade="all, delete-orphan" means if user is deleted, delete their job applications
+    job_applications = relationship("JobApplication", back_populates="user", cascade="all, delete-orphan")
+    
+    def __repr__(self):
+        """String representation - similar to toString() in Java"""
+        return f"<User(id={self.id}, email={self.email}, username={self.username})>"

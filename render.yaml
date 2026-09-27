@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: job-tracker-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "False"
+      # Generate one securely instead of setting it here, e.g.:
+      #   python -c "import secrets; print(secrets.token_urlsafe(32))"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      # Update this to your deployed Vercel URL after the frontend is live.
+      - key: ALLOWED_ORIGINS
+        value: https://your-app.vercel.app
+      # SQLite on Render's ephemeral filesystem is wiped on every deploy and
+      # restart. For anything beyond a demo, either:
+      #   (a) attach a Render Disk mounted at /app and point DATABASE_URL at
+      #       a file inside it, or
+      #   (b) provision a Render PostgreSQL instance and paste its connection
+      #       string here (see backend/.env.example for the URL format).
+      - key: DATABASE_URL
+        value: sqlite:///./job_tracker.db
+      - key: UPLOAD_DIR
+        value: ./uploads
+      - key: MAX_UPLOAD_SIZE
+        value: "5242880"
