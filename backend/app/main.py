@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.database import init_db
 
 # Create FastAPI application instance
 # Similar to SpringApplication.run() in Spring Boot
@@ -33,11 +32,8 @@ async def startup_event():
     print(f"🚀 Starting {settings.app_name} v{settings.app_version}")
     print(f"📝 Environment: {settings.environment}")
     print(f"🔧 Debug mode: {settings.debug}")
-    
-    # Initialize database (create tables)
-    # In production, use Alembic migrations instead
-    init_db()
-    print("✅ Database initialized")
+
+# Schema is managed by Alembic: run "alembic upgrade head"
 
 
 @app.on_event("shutdown")
