@@ -22,6 +22,7 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env            # then edit DATABASE_URL and SECRET_KEY
 uvicorn app.main:app --reload
+alembic upgrade head            # apply database migrations
 ```
 
 API docs available at `http://localhost:8000/api/docs`.
